@@ -1,0 +1,20 @@
+@(msg:String, form1: Form[models.Tweet])
+
+@main("add page"){
+
+	<H1>霑ｽ蜉�</H1>
+	<p>@msg</p>
+	@helper.form(action = routes.Application.create){
+		@(helper.inputText(
+			field = form1("todo_name")
+		))
+		@(helper.inputText(
+			field = form1("todo_detail")
+		))
+		@(helper.inputText(
+			field = form1("author")
+		))
+		
+		<input type="submit">
+	}
+}
