@@ -1,15 +1,15 @@
-@(msg: String, form1: Form[Application.SampleForm], datas: List[Tweet])
+@(msg: String, datas: List[Tweet])
 
 @main("Share Your Meal") {
 
+	<script src="@routes.Assets.at("javascripts/index.js")" type="text/javascript"></script>
 	<H2>Top</H2>
-	<p></p>
-	<p>@msg</p>
-	@helper.form(action = routes.Application.send){
-		@(helper.inputText(
-			field = form1("message")
-			)
-		)
-		<input type="submit">
+	<p id="datas">@msg</p>
+	<p>
+		<input type="text" id="input">
+		<button id="sendbtn">tweet</button>
+	</p>
+	@for(data <- datas) {
+		<p>@data.tweet</p>
 	}
 }

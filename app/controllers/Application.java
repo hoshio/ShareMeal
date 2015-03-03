@@ -1,12 +1,19 @@
 package controllers;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.libs.Json;
 import java.util.List;
 import models.*;
 import play.data.*;
 import static play.data.Form.*; 
 import play.mvc.*;
 import views.html.*;
-
+import java.io.*;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+import play.mvc.Result;
 
 public class Application extends Controller {
 	
@@ -15,21 +22,67 @@ public class Application extends Controller {
 	}
 
 	public static Result index() {
-		List<Tweet> datas = Tweet.find.all();
-		return ok(index.render("何か書いて",new Form(SampleForm.class), datas));
+		List<Tweet> datas = Tweet.find.orderBy("postdate desc").findList();
+		return ok(index.render("何か書いて", datas));
 	}
+	
+	public static Result ajax(){
+//		String input = request().body().asFormUrlEncoded().get("input")[0];
+//		Tweet t = Tweet.findByTweet(input);
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		String str = "<xml><root><err>ERROR!</err></root>";
+//		Document doc = null;
+//		try{
+//			doc = factory.newDocumentBuilder().newDocument();
+//			Element root = doc.createElement("data");
+//			Element el = doc.createElement("tweet");
+//			el.appendChild(doc.createTextNode(t.tweet));
+//			root.appendChild(el);
+//			doc.appendChild(root);
+//			TransformerFactory tfactory = TransformerFactory.newInstance();
+//			StringWriter writer = new StringWriter();
+//			StreamResult stream = new StreamResult(writer);
+//			Transformer trans = tfactory.newTransformer();
+//			trans.transform(new DOMSource(doc.getDocumentElement()), stream);
+//		}catch(ParserConfigurationException e){
+//			e.printStackTrace();
+//		}catch(TransformerConfigurationException e){
+//			e.printStackTrace();
+//		}catch(TransformerException e){
+//			e.printStackTrace();
+//		}
+//		
+//		if(doc == null){
+//			return badRequest(str);
+//		}else{
+//			return ok(str);
+//		}
 		
-	public static Result send(){
-		Form<SampleForm> f = form(SampleForm.class).bindFromRequest();
-		List<Tweet> datas = Tweet.find.all();
-		if(!f.hasErrors()){
-			SampleForm data = f.get();
-			String msg = "you typed: " + data.message;
-			return ok(index.render(msg, f, datas));
+		String input = request().body().asFormUrlEncoded().get("input")[0];
+		ObjectNode result = Json.newObject();
+		if(input == null){
+			result.put("tweet", "BAD");
+			result.put("username", "Can't get sending data,,,");
+			return badRequest(result);
 		}else{
-			return badRequest(index.render("ERROR", form(SampleForm.class), datas));
+			result.put("tweet", "OK");
+			result.put("username", "input");
+			return ok(result);
 		}
 	}
+	
+//	public static Result send(){
+//		Form<SampleForm> f = form(SampleForm.class).bindFromRequest();
+//		if(!f.hasErrors()){
+//			SampleForm data = f.get();
+//			String msg = "you typed: " + data.message;
+//			List<Tweet> datas = Tweet.find.all();
+//			return ok(index.render(msg, f, datas));
+//		}else{
+//			List<Tweet> datas = Tweet.find.all();
+//			return badRequest(index.render("ERROR", form(SampleForm.class), datas));
+//		}
+//	}
 	
 	public static Result add(){
 		Form<Tweet> f = new Form(Tweet.class);
@@ -41,9 +94,11 @@ public class Application extends Controller {
 		if(!f.hasErrors()){
 			Tweet data = f.get();
 			data.save();
-			return redirect("/");
+			List<Tweet> datas = Tweet.find.orderBy("postdate desc").findList();
+			return ok(index.render("tweet完了", datas));
 		}else{
-			return badRequest(add.render("ERROR", f));
+			List<Tweet> datas = Tweet.find.orderBy("postdate desc").findList();
+			return badRequest(index.render("ERROR", datas));
 		}
 	}
 	

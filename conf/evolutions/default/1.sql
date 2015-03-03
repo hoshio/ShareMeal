@@ -5,9 +5,10 @@
 
 create table tweet (
   id                        bigint not null,
-  todo_name                 varchar(255),
-  todo_detail               varchar(255),
-  author                    varchar(255),
+  tweet                     varchar(255),
+  photo                     varchar(255),
+  location                  varchar(255),
+  username                  varchar(255),
   postdate                  timestamp not null,
   constraint pk_tweet primary key (id))
 ;

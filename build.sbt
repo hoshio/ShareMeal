@@ -11,5 +11,6 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
-  "org.postgresql" % "postgresql" % "9.3-1102-jdbc4"
+  "org.postgresql" % "postgresql" % "9.3-1102-jdbc4",
+  "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.13"
 )

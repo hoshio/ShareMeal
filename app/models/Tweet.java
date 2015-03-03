@@ -20,11 +20,13 @@ public class Tweet extends Model {
 	public Long id;
 
 	@Required
-	public String todo_name;
+	public String tweet;
 	
-	public String todo_detail;
+	public String photo;
 	
-	public String author;
+	public String location;
+
+	public String username;
 	
 	@CreatedTimestamp
 	public Date postdate;
@@ -32,4 +34,8 @@ public class Tweet extends Model {
 	
 	public static Finder<Long, Tweet> find = new Finder<Long, Tweet>(Long.class, Tweet.class);
 
+	public static Tweet findByTweet(String input){
+		return Tweet.find.where().eq("tweet", input).findList().get(0);
+	}
+	
 }
